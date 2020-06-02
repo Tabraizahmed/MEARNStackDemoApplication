@@ -13,14 +13,12 @@ const User = require("../../models/User");
 router.post(
   "/",
   [
-    check("name", "Name is required")
-      .not()
-      .isEmpty(),
+    check("name", "Name is required").not().isEmpty(),
     check("email", "Please enter valid email").isEmail(),
     check(
       "password",
       "Please enter password with 6 or more charcters"
-    ).isLength({ min: 6, max: 10 })
+    ).isLength({ min: 6, max: 10 }),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -43,14 +41,14 @@ router.post(
       const avatar = gravatar.url(email, {
         s: "200",
         r: "pg",
-        d: "mm"
+        d: "mm",
       });
 
       user = new User({
         name,
         email,
         avatar,
-        password
+        password,
       });
 
       // Encrypt Password
@@ -62,8 +60,8 @@ router.post(
 
       const payload = {
         user: {
-          id: user.id
-        }
+          id: user.id,
+        },
       };
 
       // Return JsonWebToken
@@ -77,8 +75,7 @@ router.post(
         }
       );
     } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server error");
+      res.status(500).send(err.message);
     }
   }
 );
